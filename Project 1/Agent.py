@@ -64,6 +64,13 @@ class Agent:
 
         elif problemType == '3x1':
             pass
+        
+        print d
+        
+        for k1 in d.keys():
+            print k1
+            for k2 in d[k1].keys():
+                print k2
 
         print '***************************************************************'
         print ''
