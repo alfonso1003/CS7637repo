@@ -46,8 +46,6 @@ class Agent:
         print 'Problem Type:   ' + problem.getProblemType()
         print 'Correct Answer: ' + problem.correctAnswer
         print getProblemDictionary(problem)
-
-
         print '***************************************************************'
         print ''
 
