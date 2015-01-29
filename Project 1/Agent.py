@@ -43,13 +43,34 @@ class Agent:
         print ''
         print '***************************************************************'
         print 'Problem Name:   ' + problem.getName()
-        print 'Problem Type:   ' + problem.getProblemType()
+
+        problemType = problem.getProblemType()
+        print 'Problem Type:   ' + problemType
+
         print 'Correct Answer: ' + problem.correctAnswer
-        print getProblemDictionary(problem)
+
+        d = getProblemDictionary(problem)
+        A = d['A']
+        B = d['B']
+        C = d['C']
+
+        if problemType == '2x1':
+            print A
+            print B
+            print C
+
+        elif problemType == '2x2':    
+            pass
+
+        elif problemType == '3x1':
+            pass
+
         print '***************************************************************'
         print ''
 
         return "6"
+
+
 
 def getProblemDictionary(problem):
     d = {}
