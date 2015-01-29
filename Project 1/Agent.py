@@ -79,15 +79,17 @@ def getProblemDictionary(problem):
     for f in figures:
         objects = figures.get(str(f)).objects
         d[f] = {}
-        d[f]['objects'] = {}
+        #d[f]['objects'] = {}
 
         for o in objects:
             attributes = o.attributes
-            d[f]['objects'][o.getName()] = {}        
-            d[f]['objects'][o.getName()]['attributes'] = {}
+            d[f][o.getName()] = {}
+            #d[f]['objects'][o.getName()] = {}        
+            #d[f]['objects'][o.getName()]['attributes'] = {}
 
             for a in attributes:
-                d[f]['objects'][o.getName()]['attributes'][a.getName()] = a.getValue()
+                d[f][o.getName()][a.getName()] = a.getValue()
+                #d[f]['objects'][o.getName()]['attributes'][a.getName()] = a.getValue()
                 #print f, o.getName(), a.getName(), a.getValue()
 
     return d
