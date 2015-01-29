@@ -40,4 +40,35 @@ class Agent:
     # @param problem the RavensProblem your agent should solve
     # @return your Agent's answer to this problem
     def Solve(self,problem):
+        print ''
+        print '***************************************************************'
+        print 'Problem Name:   ' + problem.getName()
+        print 'Problem Type:   ' + problem.getProblemType()
+        print 'Correct Answer: ' + problem.correctAnswer
+        print getProblemDictionary(problem)
+
+
+        print '***************************************************************'
+        print ''
+
         return "6"
+
+def getProblemDictionary(problem):
+    d = {}
+
+    figures = problem.getFigures()
+    for f in figures:
+        objects = figures.get(str(f)).objects
+        d[f] = {}
+        d[f]['objects'] = {}
+
+        for o in objects:
+            attributes = o.attributes
+            d[f]['objects'][o.getName()] = {}        
+            d[f]['objects'][o.getName()]['attributes'] = {}
+
+            for a in attributes:
+                d[f]['objects'][o.getName()]['attributes'][a.getName()] = a.getValue()
+                #print f, o.getName(), a.getName(), a.getValue()
+
+    return d
