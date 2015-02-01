@@ -46,37 +46,36 @@ class Agent:
 
         problemType = problem.getProblemType()
         print 'Problem Type:   ' + problemType
-
         print 'Correct Answer: ' + problem.correctAnswer
 
+        figures = problem.getFigures()
+        figureA = figures.get("A")
+        figureB = figures.get("B")
+        figureC = figures.get("C")
+        
+        objectsA = figureA.objects
+        objectsB = figureB.objects
+        objectsC = figureC.objects
+        
         d = getProblemDictionary(problem)
-        A = d['A']
-        B = d['B']
-        C = d['C']
+        attributesA = d[figureA.getName()]
+        attributesB = d[figureB.getName()]
+        attributesC = d[figureC.getName()]
+
 
         if problemType == '2x1':
-            print A
-            print B
-            print C
+            pass
 
         elif problemType == '2x2':    
             pass
 
         elif problemType == '3x1':
             pass
-        
-        print d
-        
-        for k1 in d.keys():
-            print k1
-            for k2 in d[k1].keys():
-                print k2
 
         print '***************************************************************'
         print ''
 
         return "6"
-
 
 
 def getProblemDictionary(problem):
@@ -86,17 +85,12 @@ def getProblemDictionary(problem):
     for f in figures:
         objects = figures.get(str(f)).objects
         d[f] = {}
-        #d[f]['objects'] = {}
 
         for o in objects:
             attributes = o.attributes
             d[f][o.getName()] = {}
-            #d[f]['objects'][o.getName()] = {}        
-            #d[f]['objects'][o.getName()]['attributes'] = {}
 
             for a in attributes:
                 d[f][o.getName()][a.getName()] = a.getValue()
-                #d[f]['objects'][o.getName()]['attributes'][a.getName()] = a.getValue()
-                #print f, o.getName(), a.getName(), a.getValue()
 
     return d
