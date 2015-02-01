@@ -58,10 +58,40 @@ class Agent:
         objectsC = figureC.objects
         
         d = getProblemDictionary(problem)
+        
+        #create dictionaries with Object as key and Attributes as value 
         attributesA = d[figureA.getName()]
         attributesB = d[figureB.getName()]
         attributesC = d[figureC.getName()]
+        
+        #Start -  Make sure Figures have an equal amount of objects to make the comparison easier.
+        objectCountA = len(attributesA.keys())
+        objectCountB = len(attributesB.keys())
+        
+        # in this case, A has an object that disappears in B.
+        # to facilitate a comparison, remove object from A and the corresponding object from C.
+        if(objectCountA > objectCountB):
+            objectsInANotInB = objectDiff(attributesA, attributesB)
+            attributesA = removeObjectFromFigure(objectsInANotInB, attributesA)
+            attributesC = removeObjectFromFigure(objectsInANotInB, attributesC)
+            
+        # in this case, B has an extra object        
+        elif(objectCountB > objectCountA):
+            """
+            This special case was written to solve Classmates Problem 2.
+            My code assumes object names match between figures, however my classmate's problem does not fit this assumption
+            Will have to rework my code to handle cases where the figure names don't match
+            """
+            objectsInBNotInA = objectDiff(attributesB, attributesA)
+            attributesA = addObjectToFigure(objectsInBNotInA, attributesA, attributesB)
+            attributesC = addObjectToFigure(objectsInBNotInA, attributesC, attributesB)
+            
+        #End -  Make sure Figures have an equal amount of objects to make the comparison easier.
+        
+        # TODO: find difference in attributes of corresponding objects
+        
 
+        
 
         if problemType == '2x1':
             pass
@@ -79,6 +109,10 @@ class Agent:
 
 
 def getProblemDictionary(problem):
+    """
+    Organize problem into a dictionary with the following structure:
+    d = {FigureName1: {ObjectName1: {AttributeName1: AttributeValue1, ...}}, ... , FigureNameN: {ObjectNameN: {AttributeNameN: AttributeValueN}}}
+    """
     d = {}
 
     figures = problem.getFigures()
@@ -94,3 +128,27 @@ def getProblemDictionary(problem):
                 d[f][o.getName()][a.getName()] = a.getValue()
 
     return d
+
+def objectDiff(attributes1, attributes2):
+    """
+    checks two figures (Figures A and B for example) to see if there is an unequal amount of objects in them.
+    returns a list of objects that exist and are associated w/attributes1 but not found to exist and be associated with attributes2
+    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, then this function will return [Z]
+    """
+    diff =[]
+
+    for i in attributes1.keys():
+        if i not in attributes2.keys():
+            diff.append(i)
+    return diff
+
+def removeObjectFromFigure(diff, attributes):
+    for i in diff:
+        value_to_remove = i
+        attributes = {key: value for key, value in attributes.items() if key != value_to_remove}
+    return attributes
+        
+def addObjectToFigure(diff, attributesListToBeAddedTo, attributesListToBeAddedFrom):
+    for i in diff:
+        attributesListToBeAddedTo.update({i:attributesListToBeAddedFrom.get(i)})
+    return attributesListToBeAddedTo
