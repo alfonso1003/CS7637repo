@@ -48,6 +48,25 @@ class Agent:
         print 'Problem Type:   ' + problemType
         print 'Correct Answer: ' + problem.correctAnswer
 
+        attributesA, attributesB, attributesC = getAttributes(problem)
+
+
+        if problemType == '2x1':
+            pass
+
+        elif problemType == '2x2':    
+            pass
+
+        elif problemType == '3x1':
+            pass
+
+        print '***************************************************************'
+        print ''
+
+        return "6"
+
+
+def getAttributes(problem):
         figures = problem.getFigures()
         figureA = figures.get("A")
         figureB = figures.get("B")
@@ -88,47 +107,8 @@ class Agent:
             
         #End -  Make sure Figures have an equal amount of objects to make the comparison easier.
         
-        # TODO: find difference in attributes of corresponding objects
-        
-
-        
-
-        if problemType == '2x1':
-            pass
-
-        elif problemType == '2x2':    
-            pass
-
-        elif problemType == '3x1':
-            pass
-
-        print '***************************************************************'
-        print ''
-
-        return "6"
-
-
-def getProblemDictionary(problem):
-    """
-    Organize problem into a dictionary with the following structure:
-    d = {FigureName1: {ObjectName1: {AttributeName1: AttributeValue1, ...}}, ... , FigureNameN: {ObjectNameN: {AttributeNameN: AttributeValueN}}}
-    """
-    d = {}
-
-    figures = problem.getFigures()
-    for f in figures:
-        objects = figures.get(str(f)).objects
-        d[f] = {}
-
-        for o in objects:
-            attributes = o.attributes
-            d[f][o.getName()] = {}
-
-            for a in attributes:
-                d[f][o.getName()][a.getName()] = a.getValue()
-
-    return d
-
+        return attributesA, attributesB, attributesC
+    
 def objectDiff(attributes1, attributes2):
     """
     attributes1 is a dictionary of the type: {ObjectName1: {AttributeName1: AttributeValue1, ...}, ....}
@@ -155,3 +135,24 @@ def addObjectToFigure(diff, attributesListToBeAddedTo, attributesListToBeAddedFr
     for i in diff:
         attributesListToBeAddedTo.update({i:attributesListToBeAddedFrom.get(i)})
     return attributesListToBeAddedTo
+
+def getProblemDictionary(problem):
+    """
+    Organize problem into a dictionary with the following structure:
+    d = {FigureName1: {ObjectName1: {AttributeName1: AttributeValue1, ...}}, ... , FigureNameN: {ObjectNameN: {AttributeNameN: AttributeValueN}}}
+    """
+    d = {}
+
+    figures = problem.getFigures()
+    for f in figures:
+        objects = figures.get(str(f)).objects
+        d[f] = {}
+
+        for o in objects:
+            attributes = o.attributes
+            d[f][o.getName()] = {}
+
+            for a in attributes:
+                d[f][o.getName()][a.getName()] = a.getValue()
+
+    return d
