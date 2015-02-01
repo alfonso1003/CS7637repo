@@ -131,9 +131,12 @@ def getProblemDictionary(problem):
 
 def objectDiff(attributes1, attributes2):
     """
+    attributes1 is a dictionary of the type: {ObjectName1: {AttributeName1: AttributeValue1, ...}, ....}
+    similar for attributes 2
     checks two figures (Figures A and B for example) to see if there is an unequal amount of objects in them.
     returns a list of objects that exist and are associated w/attributes1 but not found to exist and be associated with attributes2
-    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, then this function will return [Z]
+    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, then
+    objectsInANotInB = objectDiff(attributesA, attributesB) ---->  objectsInANotInB = [Z]
     """
     diff =[]
 
