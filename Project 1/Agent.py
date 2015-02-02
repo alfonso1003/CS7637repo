@@ -171,9 +171,15 @@ def findAttributeDifferences(attributes1, attributes2):
         differences.update({a:{}})
         if a in attributes1:
             for k,v in attributes2[a].iteritems():
+                # if attributes2 (B) has an attribute value that changed from the corresponding attributes1 (A) value, then add to the differences list
                 if attributes1[a].get(k):
                     if attributes1[a].get(k) != attributes2[a].get(k):
-                        differences[a].update({k:v})
+                        if k == "angle":
+                            deltaAngle = int(attributes2[a].get(k)) - int(attributes1[a].get(k))
+                            differences[a].update({k:str(deltaAngle)})
+                        else:
+                            differences[a].update({k:v})
+                # if attributes2 (B) has an attribute key/value that attributes1 (A) doesn't have, then add to the differences list
                 else:
                     differences[a].update({k:v})
             
