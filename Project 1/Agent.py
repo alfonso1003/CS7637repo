@@ -45,14 +45,12 @@ class Agent:
         transformC(attributesC, attributesInBDifferentFromA)        
         answer = findAnswer(problem, attributesC, figures)
 
-        print ''
         print '***************************************************************'
         print 'Problem Name:   ' + problem.getName()
         print 'Problem Type:   ' + problem.getProblemType()
         print "Answer: " + answer
-        print '***************************************************************'
-        print ''
-
+        print '***************************************************************' + '\n'
+        
         return answer
 
 def getAttributes(problem):
@@ -78,6 +76,7 @@ def getAttributes(problem):
         
         # in this case, A has an object that disappears in B.
         # to facilitate a comparison, remove object from A and the corresponding object from C.
+        
         if(objectCountA > objectCountB):
             objectsInANotInB = objectDiff(attributesA, attributesB)
             attributesA = removeObjectFromFigure(objectsInANotInB, attributesA)
@@ -182,13 +181,11 @@ def transformC(attributesC, attributesInBDifferentFromA):
 def findAnswer(problem, attributes, figures):
     answers = ["1","2","3","4","5","6"]
     for a in answers:
-        object = figures.get(a)
+        objects = figures.get(a)
         d = getProblemDictionary(problem)
-        objectAttributes = d[object.getName()]
+        objectAttributes = d[objects.getName()]
         
-        print object
-        print objectAttributes
-
+        # was pleased to find you can compare dictionaries like this below! so easy compared to java
         if objectAttributes == attributes:
             return a
     return "2" # guess en lieu of random number generator
