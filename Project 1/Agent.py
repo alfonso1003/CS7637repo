@@ -168,10 +168,13 @@ def getProblemDictionary(problem):
 def findAttributeDifferences(attributes1, attributes2):
     differences = {}
     for a in attributes2:
+        differences.update({a:{}})
         if a in attributes1:
-            differences.update({a:{}})
             for k,v in attributes2[a].iteritems():
                 if attributes1[a].get(k):
                     if attributes1[a].get(k) != attributes2[a].get(k):
                         differences[a].update({k:v})
+                else:
+                    differences[a].update({k:v})
+            
     return differences
