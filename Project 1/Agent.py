@@ -49,7 +49,8 @@ class Agent:
         print 'Correct Answer: ' + problem.correctAnswer
 
         attributesA, attributesB, attributesC = getAttributes(problem)
-
+        
+        attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
 
         if problemType == '2x1':
             pass
@@ -156,3 +157,12 @@ def getProblemDictionary(problem):
                 d[f][o.getName()][a.getName()] = a.getValue()
 
     return d
+
+
+def findAttributeDifferences(attributes1, attributes2):
+    for a in attributes1:
+        if a in attributes2:
+            for k,v in attributes1[a].iteritems():
+                if attributes2[a].get(k):
+                    if attributes2[a].get(k) == v:
+                        print k, v
