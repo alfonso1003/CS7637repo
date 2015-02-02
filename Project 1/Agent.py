@@ -51,6 +51,12 @@ class Agent:
         attributesA, attributesB, attributesC = getAttributes(problem)
         
         attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
+        
+        print attributesA
+        print attributesB
+        print attributesC
+        
+        print attributesInBDifferentFromA
 
         if problemType == '2x1':
             pass
@@ -160,9 +166,12 @@ def getProblemDictionary(problem):
 
 
 def findAttributeDifferences(attributes1, attributes2):
-    for a in attributes1:
-        if a in attributes2:
-            for k,v in attributes1[a].iteritems():
-                if attributes2[a].get(k):
-                    if attributes2[a].get(k) == v:
-                        print k, v
+    differences = {}
+    for a in attributes2:
+        if a in attributes1:
+            differences.update({a:{}})
+            for k,v in attributes2[a].iteritems():
+                if attributes1[a].get(k):
+                    if attributes1[a].get(k) != attributes2[a].get(k):
+                        differences[a].update({k:v})
+    return differences
