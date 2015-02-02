@@ -40,38 +40,20 @@ class Agent:
     # @param problem the RavensProblem your agent should solve
     # @return your Agent's answer to this problem
     def Solve(self,problem):
+        figures, attributesA, attributesB, attributesC = getAttributes(problem)
+        attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
+        transformC(attributesC, attributesInBDifferentFromA)        
+        answer = findAnswer(problem, attributesC, figures)
+
         print ''
         print '***************************************************************'
         print 'Problem Name:   ' + problem.getName()
-
-        problemType = problem.getProblemType()
-        print 'Problem Type:   ' + problemType
-        print 'Correct Answer: ' + problem.correctAnswer
-
-        attributesA, attributesB, attributesC = getAttributes(problem)
-        
-        attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
-        
-        print attributesA
-        print attributesB
-        print attributesC
-        
-        print attributesInBDifferentFromA
-
-        if problemType == '2x1':
-            pass
-
-        elif problemType == '2x2':    
-            pass
-
-        elif problemType == '3x1':
-            pass
-
+        print 'Problem Type:   ' + problem.getProblemType()
+        print "Answer: " + answer
         print '***************************************************************'
         print ''
 
-        return "6"
-
+        return answer
 
 def getAttributes(problem):
         figures = problem.getFigures()
@@ -114,16 +96,15 @@ def getAttributes(problem):
             
         #End -  Make sure Figures have an equal amount of objects to make the comparison easier.
         
-        return attributesA, attributesB, attributesC
+        return figures, attributesA, attributesB, attributesC
     
 def objectDiff(attributes1, attributes2):
     """
-    attributes1 is a dictionary of the type: {ObjectName1: {AttributeName1: AttributeValue1, ...}, ....}
-    similar for attributes 2
+    attributes1 is a dictionary of the type: {ObjectName1: {AttributeName1: AttributeValue1, ...}, ....} similar for attributes 2
     checks two figures (Figures A and B for example) to see if there is an unequal amount of objects in them.
     returns a list of objects that exist and are associated w/attributes1 but not found to exist and be associated with attributes2
-    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, then
-    objectsInANotInB = objectDiff(attributesA, attributesB) ---->  objectsInANotInB = [Z]
+    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, 
+    then objectsInANotInB = objectDiff(attributesA, attributesB) ---->  objectsInANotInB = [Z]
     """
     diff =[]
 
@@ -175,7 +156,7 @@ def findAttributeDifferences(attributes1, attributes2):
                 if attributes1[a].get(k):
                     if attributes1[a].get(k) != attributes2[a].get(k):
                         if k == "angle":
-                            deltaAngle = int(attributes2[a].get(k)) - int(attributes1[a].get(k))
+                            deltaAngle = int(attributes2[a].get(k)) - int(attributes1[a].get(k)) % 360
                             differences[a].update({k:str(deltaAngle)})
                         else:
                             differences[a].update({k:v})
@@ -184,3 +165,30 @@ def findAttributeDifferences(attributes1, attributes2):
                     differences[a].update({k:v})
             
     return differences
+
+def transformC(attributesC, attributesInBDifferentFromA):
+    for object, attributes in attributesInBDifferentFromA.iteritems():
+        if attributesC.get(object):
+            object = attributesC.get(object)
+            
+            # transforming the objects at this point
+            for k, v in attributes.iteritems():
+                # problem 19 exception.
+                # rotating a circle doesn't do anything ... just ignore this case and keep looping
+                if((object.get('shape')=="circle") and (k=="angle")):
+                    continue
+                object[k]=v 
+
+def findAnswer(problem, attributes, figures):
+    answers = ["1","2","3","4","5","6"]
+    for a in answers:
+        object = figures.get(a)
+        d = getProblemDictionary(problem)
+        objectAttributes = d[object.getName()]
+        
+        print object
+        print objectAttributes
+
+        if objectAttributes == attributes:
+            return a
+    return "2" # guess en lieu of random number generator
