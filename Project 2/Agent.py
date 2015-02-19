@@ -40,4 +40,152 @@ class Agent:
     # @param problem the RavensProblem your agent should solve
     # @return your Agent's answer to this problem
     def Solve(self,problem):
-        return "6"
+        figures, attributesA, attributesB, attributesC = getAttributes(problem)
+        attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
+        transformC(attributesC, attributesInBDifferentFromA)        
+        answer = findAnswer(problem, attributesC, figures)
+
+        print '***************************************************************'
+        print 'Problem Name:   ' + problem.getName()
+        print 'Problem Type:   ' + problem.getProblemType()
+        print "Answer: " + answer
+        print '***************************************************************' + '\n'
+        
+        return answer
+
+def getAttributes(problem):
+        figures = problem.getFigures()
+        figureA = figures.get("A")
+        figureB = figures.get("B")
+        figureC = figures.get("C")
+        
+        objectsA = figureA.objects
+        objectsB = figureB.objects
+        objectsC = figureC.objects
+        
+        d = getProblemDictionary(problem)
+        
+        #create dictionaries with Object as key and Attributes as value 
+        attributesA = d[figureA.getName()]
+        attributesB = d[figureB.getName()]
+        attributesC = d[figureC.getName()]
+        
+        #Start -  Make sure Figures have an equal amount of objects to make the comparison easier.
+        objectCountA = len(attributesA.keys())
+        objectCountB = len(attributesB.keys())
+        
+        # in this case, A has an object that disappears in B.
+        # to facilitate a comparison, remove object from A and the corresponding object from C.
+        
+        if(objectCountA > objectCountB):
+            objectsInANotInB = objectDiff(attributesA, attributesB)
+            attributesA = removeObjectFromFigure(objectsInANotInB, attributesA)
+            attributesC = removeObjectFromFigure(objectsInANotInB, attributesC)
+            
+        # in this case, B has an extra object        
+        elif(objectCountB > objectCountA):
+            """
+            This special case was written to solve Classmates Problem 2.
+            My code assumes object names match between figures, however my classmate's problem does not fit this assumption
+            Will have to rework my code to handle cases where the figure names don't match
+            """
+            objectsInBNotInA = objectDiff(attributesB, attributesA)
+            attributesA = addObjectToFigure(objectsInBNotInA, attributesA, attributesB)
+            attributesC = addObjectToFigure(objectsInBNotInA, attributesC, attributesB)
+            
+        #End -  Make sure Figures have an equal amount of objects to make the comparison easier.
+        
+        return figures, attributesA, attributesB, attributesC
+    
+def objectDiff(attributes1, attributes2):
+    """
+    attributes1 is a dictionary of the type: {ObjectName1: {AttributeName1: AttributeValue1, ...}, ....} similar for attributes 2
+    checks two figures (Figures A and B for example) to see if there is an unequal amount of objects in them.
+    returns a list of objects that exist and are associated w/attributes1 but not found to exist and be associated with attributes2
+    For example, if Figure A has Objects X, Y, and Z and Figure B has Objects X and Y, 
+    then objectsInANotInB = objectDiff(attributesA, attributesB) ---->  objectsInANotInB = [Z]
+    """
+    diff =[]
+
+    for i in attributes1.keys():
+        if i not in attributes2.keys():
+            diff.append(i)
+    return diff
+
+def removeObjectFromFigure(diff, attributes):
+    for i in diff:
+        value_to_remove = i
+        attributes = {key: value for key, value in attributes.items() if key != value_to_remove}
+    return attributes
+        
+def addObjectToFigure(diff, attributesListToBeAddedTo, attributesListToBeAddedFrom):
+    for i in diff:
+        attributesListToBeAddedTo.update({i:attributesListToBeAddedFrom.get(i)})
+    return attributesListToBeAddedTo
+
+def getProblemDictionary(problem):
+    """
+    Organize problem into a dictionary with the following structure:
+    d = {FigureName1: {ObjectName1: {AttributeName1: AttributeValue1, ...}}, ... , FigureNameN: {ObjectNameN: {AttributeNameN: AttributeValueN}}}
+    """
+    d = {}
+
+    figures = problem.getFigures()
+    for f in figures:
+        objects = figures.get(str(f)).objects
+        d[f] = {}
+
+        for o in objects:
+            attributes = o.attributes
+            d[f][o.getName()] = {}
+
+            for a in attributes:
+                d[f][o.getName()][a.getName()] = a.getValue()
+
+    return d
+
+
+def findAttributeDifferences(attributes1, attributes2):
+    differences = {}
+    for a in attributes2:
+        differences.update({a:{}})
+        if a in attributes1:
+            for k,v in attributes2[a].iteritems():
+                # if attributes2 (B) has an attribute value that changed from the corresponding attributes1 (A) value, then add to the differences list
+                if attributes1[a].get(k):
+                    if attributes1[a].get(k) != attributes2[a].get(k):
+                        if k == "angle":
+                            deltaAngle = int(attributes2[a].get(k)) - int(attributes1[a].get(k)) % 360
+                            differences[a].update({k:str(deltaAngle)})
+                        else:
+                            differences[a].update({k:v})
+                # if attributes2 (B) has an attribute key/value that attributes1 (A) doesn't have, then add to the differences list
+                else:
+                    differences[a].update({k:v})
+            
+    return differences
+
+def transformC(attributesC, attributesInBDifferentFromA):
+    for object, attributes in attributesInBDifferentFromA.iteritems():
+        if attributesC.get(object):
+            object = attributesC.get(object)
+            
+            # transforming the objects at this point
+            for k, v in attributes.iteritems():
+                # problem 19 exception.
+                # rotating a circle doesn't do anything ... just ignore this case and keep looping
+                if((object.get('shape')=="circle") and (k=="angle")):
+                    continue
+                object[k]=v 
+
+def findAnswer(problem, attributes, figures):
+    answers = ["1","2","3","4","5","6"]
+    for a in answers:
+        objects = figures.get(a)
+        d = getProblemDictionary(problem)
+        objectAttributes = d[objects.getName()]
+        
+        # was pleased to find you can compare dictionaries like this below! so easy compared to java
+        if objectAttributes == attributes:
+            return a
+    return "2" # guess en lieu of random number generator
