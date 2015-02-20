@@ -1,3 +1,5 @@
+import itertools
+
 # Your Agent for solving Raven's Progressive Matrices. You MUST modify this file.
 #
 # You may also create and submit new files in addition to modifying this file.
@@ -44,14 +46,34 @@ class Agent:
         attributesInBDifferentFromA = findAttributeDifferences(attributesA, attributesB)
         transformC(attributesC, attributesInBDifferentFromA)        
         answer = findAnswer(problem, attributesC, figures)
+        
+        """
 
         print '***************************************************************'
         print 'Problem Name:   ' + problem.getName()
         print 'Problem Type:   ' + problem.getProblemType()
         print "Answer: " + answer
         print '***************************************************************' + '\n'
+        """
+        #d = getProblemDictionary(problem)
+        
+        #print d
+        
+        print getProblemList(problem)
+        
+        #for k1 in d:
+        #    for k2 in d[k1]:
+        #        print k1 + k2
+        #        
+        #        print type(k1), type(k2)
         
         return answer
+    
+    
+    
+    
+    
+
 
 def getAttributes(problem):
         figures = problem.getFigures()
@@ -188,4 +210,105 @@ def findAnswer(problem, attributes, figures):
         # was pleased to find you can compare dictionaries like this below! so easy compared to java
         if objectAttributes == attributes:
             return a
-    return "2" # guess en lieu of random number generator
+    return "10" # guess en lieu of random number generator
+
+
+
+def correspondences(list1, list2):
+    """
+    list1 is a list of the objects in Figure A
+    list2 is a list of the objects in Figure B
+    returns a list of list of tuples which represent all possible correspondences between the **indices** of list1 and list2
+    """
+    len1 = len(list1)
+    len2 = len(list2)
+    indices1 = [i for i in range(len1)]
+    indices2 = [i for i in range(len2)]
+    
+    if len1 >= len2:
+        correspondences = [zip(x,indices2) for x in itertools.permutations(indices1,len(indices2))]
+    else:
+        correspondences = [zip(indices1, y) for y in itertools.permutations(indices2,len(indices1))]
+
+    return indices1, indices2, correspondences
+
+
+
+# some code that I need to integrate to the above so i can run algorithm across all possible correspondence combinations
+def objects_to_remove_or_add(indices1, indices2, correspondence_list_of_tuples):
+    """
+    indices1 is a list of the indices of the objects in Figure A
+    for example, if objects_in_A = [X, Y, Z] then indices1 = [0, 1, 2]
+    similar for indices2
+    correspondence_list_of_tuples is a correspondence between the indices of the objects in Figures A and B
+    In order to make a comparison and transformation, it is useful to make sure Figures A, B, C, and the candidate answer have an equal amount of objects
+    This function will return what objects can be removed or added to the Figures
+    """
+    len1 = len(indices1)
+    len2 = len(indices2)
+    status = {'add to A and C': None, 'remove from B and answer': None}
+    
+    if len1 == len2:
+        return status
+    elif len1 > len2:
+        x_vals = zip(*correspondence_list_of_tuples)[0]
+        remove_list = [l for l in indices1 if l not in x_vals]        
+        status['remove from B and answer'] = remove_list
+        return status
+    else:
+        y_vals = zip(*correspondence_list_of_tuples)[1]
+        add_list = [l for l in indices2 if l not in y_vals]
+        status['add to A and C'] = add_list
+        return status
+
+# Examples
+# Lists represent the objects in A and B
+list1, list2 = ['A', 'B', 'C'], ['D', 'E', 'F']
+indices1, indices2, correspondence_list = correspondences(list1, list2)
+print correspondence_list
+for c in correspondence_list:
+    remove_or_add = objects_to_remove_or_add(indices1, indices2, c)
+    print c , remove_or_add
+
+print "*******************************************************************"
+
+list3, list4 = ['A', 'B'], ['C', 'D', 'E']
+indices3, indices4, correspondence_list =  correspondences(list3, list4)
+print correspondence_list
+for c in correspondence_list:
+    remove_or_add = objects_to_remove_or_add(indices3, indices4, c)
+    print c, remove_or_add
+    
+
+print "*******************************************************************"
+
+list5, list6 = ['A', 'B', 'C'], ['D', 'E']
+indices5, indices6, correspondence_list =  correspondences(list5, list6)
+print correspondence_list
+for c in correspondence_list:
+    remove_or_add = objects_to_remove_or_add(indices5, indices6, c)
+    print c, remove_or_add
+
+"""    
+TODO: repurpose Project 1 algorithm
+
+
+get list_of_objects_from_A and list_of_objects_from_B and compare length of lists
+
+if lengths are the same:
+    find all correspondences between objects in A and B:
+    for each correspondence, run Project 1 algorithm
+        stop when answer is found
+    
+if list_of_objects_from_A > list_of_objects_from_B:
+    find all correspondences between objects in A and B:
+        for each correspondence, pop the extra object(s) in B and answer:
+            for each correspondence, run Project 1 algorithm
+                stop when answer is found
+                    
+if list_of_objects_from_A < list_of_objects_from_B:
+    find all correspondences between objects in A and B:
+        for each correspondence, add the extra object(s) to A and C:
+            for each correspondence, run Project 1 algorithm
+                stop when answer is found
+"""
