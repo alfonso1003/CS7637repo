@@ -213,7 +213,7 @@ def findAnswer(problem, attributes, figures):
     return "10" # guess en lieu of random number generator
 
 
-
+# some code that I need to integrate to the above so i can run algorithm across all possible correspondence combinations
 def correspondences(list1, list2):
     """
     list1 is a list of the objects in Figure A
@@ -233,8 +233,6 @@ def correspondences(list1, list2):
     return indices1, indices2, correspondences
 
 
-
-# some code that I need to integrate to the above so i can run algorithm across all possible correspondence combinations
 def objects_to_remove_or_add(indices1, indices2, correspondence_list_of_tuples):
     """
     indices1 is a list of the indices of the objects in Figure A
@@ -260,7 +258,7 @@ def objects_to_remove_or_add(indices1, indices2, correspondence_list_of_tuples):
         add_list = [l for l in indices2 if l not in y_vals]
         status['add to A and C'] = add_list
         return status
-
+"""
 # Examples
 # Lists represent the objects in A and B
 list1, list2 = ['A', 'B', 'C'], ['D', 'E', 'F']
@@ -289,7 +287,10 @@ for c in correspondence_list:
     remove_or_add = objects_to_remove_or_add(indices5, indices6, c)
     print c, remove_or_add
 
-"""    
+    
+print "*******************************************************************"
+
+
 TODO: repurpose Project 1 algorithm
 
 
